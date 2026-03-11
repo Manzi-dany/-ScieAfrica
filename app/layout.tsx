@@ -9,8 +9,35 @@ const _geist = Geist({ subsets: ["latin"] });
 const _geistMono = Geist_Mono({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: 'SciAfrica - Science & Innovation in Africa',
-  description: 'Exploring agriculture, health, biotechnology, and emerging technologies transforming Africa',
+  title: 'SciAfrica - African Science & Innovation Platform',
+  description: 'Discover groundbreaking research, innovations, and scientific breakthroughs from across Africa. Explore agriculture, health, biotechnology, AI, and emerging technologies transforming the continent.',
+  keywords: ['African science', 'African innovation', 'African research', 'biotechnology Africa', 'AI Africa', 'agriculture Africa', 'health Africa', 'African scientists', 'science news Africa'],
+  authors: [{ name: 'SciAfrica' }],
+  creator: 'SciAfrica',
+  publisher: 'SciAfrica',
+  robots: 'index, follow',
+  openGraph: {
+    type: 'website',
+    locale: 'en_US',
+    url: 'https://sciafrica.vercel.app',
+    siteName: 'SciAfrica',
+    title: 'SciAfrica - African Science & Innovation Platform',
+    description: 'Discover groundbreaking research, innovations, and scientific breakthroughs from across Africa.',
+    images: [
+      {
+        url: '/hero.jpg',
+        width: 1200,
+        height: 630,
+        alt: 'SciAfrica - Science and Innovation in Africa',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'SciAfrica - African Science & Innovation Platform',
+    description: 'Discover groundbreaking research, innovations, and scientific breakthroughs from across Africa.',
+    images: ['/hero.jpg'],
+  },
   generator: 'v0.app',
   icons: {
     icon: [
@@ -29,6 +56,7 @@ export const metadata: Metadata = {
     ],
     apple: '/apple-icon.png',
   },
+  metadataBase: new URL('https://sciafrica.vercel.app'),
 }
 
 export const viewport: Viewport = {
