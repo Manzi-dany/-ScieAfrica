@@ -75,12 +75,36 @@ export default function AdminPage() {
   const [news, setNews] = useState<NewsArticle[]>([])
   const [stats, setStats] = useState({ articles: 0, scientists: 0, innovations: 0, views: 0 })
 
-  // Form states
+  // Article form states
   const [showArticleForm, setShowArticleForm] = useState(false)
   const [articleTitle, setArticleTitle] = useState('')
   const [articleContent, setArticleContent] = useState('')
   const [articleCategory, setArticleCategory] = useState('agriculture')
   const [articleTags, setArticleTags] = useState('')
+  const [articleAuthor, setArticleAuthor] = useState('')
+  const [articleImage, setArticleImage] = useState('')
+
+  // Scientist form states
+  const [showScientistForm, setShowScientistForm] = useState(false)
+  const [scientistName, setScientistName] = useState('')
+  const [scientistTitle, setScientistTitle] = useState('')
+  const [scientistInstitution, setScientistInstitution] = useState('')
+  const [scientistCountry, setScientistCountry] = useState('')
+  const [scientistBio, setScientistBio] = useState('')
+  const [scientistResearchAreas, setScientistResearchAreas] = useState('')
+  const [scientistImage, setScientistImage] = useState('')
+  const [scientistLinkedIn, setScientistLinkedIn] = useState('')
+  const [scientistTwitter, setScientistTwitter] = useState('')
+  const [scientistPublications, setScientistPublications] = useState('0')
+
+  // Innovation form states
+  const [showInnovationForm, setShowInnovationForm] = useState(false)
+  const [innovationName, setInnovationName] = useState('')
+  const [innovationCategory, setInnovationCategory] = useState('')
+  const [innovationCountry, setInnovationCountry] = useState('')
+  const [innovationStage, setInnovationStage] = useState('')
+  const [innovationDescription, setInnovationDescription] = useState('')
+  const [innovationYear, setInnovationYear] = useState(new Date().getFullYear().toString())
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -148,6 +172,8 @@ export default function AdminPage() {
           content: articleContent,
           category: articleCategory,
           tags: articleTags.split(',').map((t) => t.trim()).filter(Boolean),
+          author: articleAuthor,
+          image: articleImage,
           published: true,
         }),
       })
@@ -157,11 +183,87 @@ export default function AdminPage() {
         setArticleContent('')
         setArticleCategory('agriculture')
         setArticleTags('')
+        setArticleAuthor('')
+        setArticleImage('')
         setShowArticleForm(false)
         loadAllData()
       }
     } catch (error) {
       console.error('Error creating article:', error)
+    }
+  }
+
+  const handleCreateScientist = async (e: React.FormEvent) => {
+    e.preventDefault()
+
+    try {
+      const response = await fetch('/api/scientists', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: scientistName,
+          title: scientistTitle,
+          institution: scientistInstitution,
+          country: scientistCountry,
+          bio: scientistBio,
+          researchAreas: scientistResearchAreas.split(',').map((t) => t.trim()).filter(Boolean),
+          image: scientistImage,
+          linkedIn: scientistLinkedIn,
+          twitter: scientistTwitter,
+          publications: parseInt(scientistPublications) || 0,
+          featured: false,
+        }),
+      })
+
+      if (response.ok) {
+        setScientistName('')
+        setScientistTitle('')
+        setScientistInstitution('')
+        setScientistCountry('')
+        setScientistBio('')
+        setScientistResearchAreas('')
+        setScientistImage('')
+        setScientistLinkedIn('')
+        setScientistTwitter('')
+        setScientistPublications('0')
+        setShowScientistForm(false)
+        loadAllData()
+      }
+    } catch (error) {
+      console.error('Error creating scientist:', error)
+    }
+  }
+
+  const handleCreateInnovation = async (e: React.FormEvent) => {
+    e.preventDefault()
+
+    try {
+      const response = await fetch('/api/innovations', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: innovationName,
+          category: innovationCategory,
+          country: innovationCountry,
+          stage: innovationStage,
+          description: innovationDescription,
+          year: parseInt(innovationYear),
+          featured: false,
+        }),
+      })
+
+      if (response.ok) {
+        setInnovationName('')
+        setInnovationCategory('')
+        setInnovationCountry('')
+        setInnovationStage('')
+        setInnovationDescription('')
+        setInnovationYear(new Date().getFullYear().toString())
+        setShowInnovationForm(false)
+        loadAllData()
+      }
+    } catch (error) {
+      console.error('Error creating innovation:', error)
     }
   }
 
@@ -384,6 +486,26 @@ export default function AdminPage() {
                     </select>
                   </div>
                   <div>
+                    <label className="block text-sm font-medium text-foreground mb-2">Author</label>
+                    <input
+                      type="text"
+                      value={articleAuthor}
+                      onChange={(e) => setArticleAuthor(e.target.value)}
+                      placeholder="Enter author name"
+                      className="w-full px-4 py-2 border border-border rounded-lg bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-foreground mb-2">Image URL (optional)</label>
+                    <input
+                      type="text"
+                      value={articleImage}
+                      onChange={(e) => setArticleImage(e.target.value)}
+                      placeholder="https://example.com/image.jpg"
+                      className="w-full px-4 py-2 border border-border rounded-lg bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+                    />
+                  </div>
+                  <div>
                     <label className="block text-sm font-medium text-foreground mb-2">Tags (comma-separated)</label>
                     <input
                       type="text"
@@ -469,7 +591,162 @@ export default function AdminPage() {
         {/* Scientists Tab */}
         {activeTab === 'scientists' && (
           <div>
-            <h2 className="text-2xl font-bold text-foreground mb-6">Scientist Profiles</h2>
+            <div className="flex justify-between items-center mb-6">
+              <h2 className="text-2xl font-bold text-foreground">Scientist Profiles</h2>
+              <button
+                onClick={() => setShowScientistForm(!showScientistForm)}
+                className="flex items-center gap-2 bg-primary hover:bg-primary/90 text-primary-foreground px-4 py-2 rounded-lg transition-colors"
+              >
+                <Plus className="w-4 h-4" />
+                Add Scientist
+              </button>
+            </div>
+
+            {showScientistForm && (
+              <Card className="p-6 mb-8 border border-border">
+                <h3 className="text-lg font-semibold mb-4">Add New Scientist</h3>
+                <form onSubmit={handleCreateScientist} className="space-y-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm font-medium text-foreground mb-2">Full Name *</label>
+                      <input
+                        type="text"
+                        value={scientistName}
+                        onChange={(e) => setScientistName(e.target.value)}
+                        placeholder="Dr. Jane Doe"
+                        className="w-full px-4 py-2 border border-border rounded-lg bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+                        required
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-foreground mb-2">Title/Position *</label>
+                      <input
+                        type="text"
+                        value={scientistTitle}
+                        onChange={(e) => setScientistTitle(e.target.value)}
+                        placeholder="Senior Researcher"
+                        className="w-full px-4 py-2 border border-border rounded-lg bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+                        required
+                      />
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm font-medium text-foreground mb-2">Institution *</label>
+                      <input
+                        type="text"
+                        value={scientistInstitution}
+                        onChange={(e) => setScientistInstitution(e.target.value)}
+                        placeholder="University of Nairobi"
+                        className="w-full px-4 py-2 border border-border rounded-lg bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+                        required
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-foreground mb-2">Country *</label>
+                      <select
+                        value={scientistCountry}
+                        onChange={(e) => setScientistCountry(e.target.value)}
+                        className="w-full px-4 py-2 border border-border rounded-lg bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+                        required
+                      >
+                        <option value="">Select country</option>
+                        <option value="Kenya">Kenya</option>
+                        <option value="Nigeria">Nigeria</option>
+                        <option value="South Africa">South Africa</option>
+                        <option value="Ghana">Ghana</option>
+                        <option value="Egypt">Egypt</option>
+                        <option value="Morocco">Morocco</option>
+                        <option value="Rwanda">Rwanda</option>
+                        <option value="Ethiopia">Ethiopia</option>
+                        <option value="Uganda">Uganda</option>
+                        <option value="Tanzania">Tanzania</option>
+                        <option value="Cameroon">Cameroon</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-foreground mb-2">Bio *</label>
+                    <textarea
+                      value={scientistBio}
+                      onChange={(e) => setScientistBio(e.target.value)}
+                      placeholder="Brief biography and research focus..."
+                      rows={4}
+                      className="w-full px-4 py-2 border border-border rounded-lg bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+                      required
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-foreground mb-2">Research Areas (comma-separated)</label>
+                    <input
+                      type="text"
+                      value={scientistResearchAreas}
+                      onChange={(e) => setScientistResearchAreas(e.target.value)}
+                      placeholder="e.g., Biotechnology, Agriculture, Climate Science"
+                      className="w-full px-4 py-2 border border-border rounded-lg bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+                    />
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div>
+                      <label className="block text-sm font-medium text-foreground mb-2">Profile Image URL</label>
+                      <input
+                        type="text"
+                        value={scientistImage}
+                        onChange={(e) => setScientistImage(e.target.value)}
+                        placeholder="https://example.com/photo.jpg"
+                        className="w-full px-4 py-2 border border-border rounded-lg bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-foreground mb-2">LinkedIn URL</label>
+                      <input
+                        type="text"
+                        value={scientistLinkedIn}
+                        onChange={(e) => setScientistLinkedIn(e.target.value)}
+                        placeholder="https://linkedin.com/in/..."
+                        className="w-full px-4 py-2 border border-border rounded-lg bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-foreground mb-2">Twitter URL</label>
+                      <input
+                        type="text"
+                        value={scientistTwitter}
+                        onChange={(e) => setScientistTwitter(e.target.value)}
+                        placeholder="https://twitter.com/..."
+                        className="w-full px-4 py-2 border border-border rounded-lg bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+                      />
+                    </div>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-foreground mb-2">Number of Publications</label>
+                    <input
+                      type="number"
+                      value={scientistPublications}
+                      onChange={(e) => setScientistPublications(e.target.value)}
+                      placeholder="0"
+                      className="w-full px-4 py-2 border border-border rounded-lg bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+                    />
+                  </div>
+                  <div className="flex gap-4">
+                    <button
+                      type="submit"
+                      className="bg-primary hover:bg-primary/90 text-primary-foreground px-6 py-2 rounded-lg transition-colors"
+                    >
+                      Add Scientist
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setShowScientistForm(false)}
+                      className="bg-muted hover:bg-muted/80 text-foreground px-6 py-2 rounded-lg transition-colors"
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                </form>
+              </Card>
+            )}
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {scientists.map((scientist) => (
                 <Card key={scientist.id} className="p-4 border border-border">
@@ -491,7 +768,134 @@ export default function AdminPage() {
         {/* Innovations Tab */}
         {activeTab === 'innovations' && (
           <div>
-            <h2 className="text-2xl font-bold text-foreground mb-6">Innovations</h2>
+            <div className="flex justify-between items-center mb-6">
+              <h2 className="text-2xl font-bold text-foreground">Innovations</h2>
+              <button
+                onClick={() => setShowInnovationForm(!showInnovationForm)}
+                className="flex items-center gap-2 bg-primary hover:bg-primary/90 text-primary-foreground px-4 py-2 rounded-lg transition-colors"
+              >
+                <Plus className="w-4 h-4" />
+                Add Innovation
+              </button>
+            </div>
+
+            {showInnovationForm && (
+              <Card className="p-6 mb-8 border border-border">
+                <h3 className="text-lg font-semibold mb-4">Add New Innovation</h3>
+                <form onSubmit={handleCreateInnovation} className="space-y-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm font-medium text-foreground mb-2">Innovation Name *</label>
+                      <input
+                        type="text"
+                        value={innovationName}
+                        onChange={(e) => setInnovationName(e.target.value)}
+                        placeholder="e.g., Solar-Powered Water Purifier"
+                        className="w-full px-4 py-2 border border-border rounded-lg bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+                        required
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-foreground mb-2">Category *</label>
+                      <select
+                        value={innovationCategory}
+                        onChange={(e) => setInnovationCategory(e.target.value)}
+                        className="w-full px-4 py-2 border border-border rounded-lg bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+                        required
+                      >
+                        <option value="">Select category</option>
+                        <option value="Agriculture">Agriculture</option>
+                        <option value="Health">Health</option>
+                        <option value="Energy">Energy</option>
+                        <option value="Education">Education</option>
+                        <option value="Finance">Finance</option>
+                        <option value="Transportation">Transportation</option>
+                        <option value="Environment">Environment</option>
+                        <option value="AI & Technology">AI & Technology</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div>
+                      <label className="block text-sm font-medium text-foreground mb-2">Country *</label>
+                      <select
+                        value={innovationCountry}
+                        onChange={(e) => setInnovationCountry(e.target.value)}
+                        className="w-full px-4 py-2 border border-border rounded-lg bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+                        required
+                      >
+                        <option value="">Select country</option>
+                        <option value="Kenya">Kenya</option>
+                        <option value="Nigeria">Nigeria</option>
+                        <option value="South Africa">South Africa</option>
+                        <option value="Ghana">Ghana</option>
+                        <option value="Egypt">Egypt</option>
+                        <option value="Morocco">Morocco</option>
+                        <option value="Rwanda">Rwanda</option>
+                        <option value="Ethiopia">Ethiopia</option>
+                        <option value="Uganda">Uganda</option>
+                        <option value="Tanzania">Tanzania</option>
+                        <option value="Cameroon">Cameroon</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-foreground mb-2">Stage *</label>
+                      <select
+                        value={innovationStage}
+                        onChange={(e) => setInnovationStage(e.target.value)}
+                        className="w-full px-4 py-2 border border-border rounded-lg bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+                        required
+                      >
+                        <option value="">Select stage</option>
+                        <option value="Concept">Concept</option>
+                        <option value="Prototype">Prototype</option>
+                        <option value="Pilot">Pilot</option>
+                        <option value="Growth">Growth</option>
+                        <option value="Scale">Scale</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-foreground mb-2">Year *</label>
+                      <input
+                        type="number"
+                        value={innovationYear}
+                        onChange={(e) => setInnovationYear(e.target.value)}
+                        placeholder="2026"
+                        className="w-full px-4 py-2 border border-border rounded-lg bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+                        required
+                      />
+                    </div>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-foreground mb-2">Description *</label>
+                    <textarea
+                      value={innovationDescription}
+                      onChange={(e) => setInnovationDescription(e.target.value)}
+                      placeholder="Describe the innovation, its impact, and how it works..."
+                      rows={4}
+                      className="w-full px-4 py-2 border border-border rounded-lg bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+                      required
+                    />
+                  </div>
+                  <div className="flex gap-4">
+                    <button
+                      type="submit"
+                      className="bg-primary hover:bg-primary/90 text-primary-foreground px-6 py-2 rounded-lg transition-colors"
+                    >
+                      Add Innovation
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setShowInnovationForm(false)}
+                      className="bg-muted hover:bg-muted/80 text-foreground px-6 py-2 rounded-lg transition-colors"
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                </form>
+              </Card>
+            )}
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {innovations.map((innovation) => (
                 <Card key={innovation.id} className="p-4 border border-border">
