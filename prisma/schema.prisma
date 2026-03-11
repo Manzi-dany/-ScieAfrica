@@ -1,0 +1,107 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// Article/Blog model for storing blog posts and articles
+model Article {
+  id          String   @id @default(uuid())
+  title       String
+  content     String
+  category    String   // agriculture, health, emerging-tech, biotech, ai
+  tags        String[] // Array of tags for filtering
+  image       String?  // Featured image URL
+  images      String[] // Additional images for the article
+  pdfUrl      String?  // PDF attachment URL
+  author      String?  // Author name
+  published   Boolean  @default(true)
+  viewCount   Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([category])
+  @@index([published])
+  @@index([createdAt])
+}
+
+// Scientist profiles for showcasing African researchers
+model ScientistProfile {
+  id            String   @id @default(uuid())
+  name          String
+  title         String   // e.g., "Dr.", "Prof.", "Researcher"
+  institution   String   // University or research institution
+  bio           String   // Biography
+  researchAreas String[] // Areas of expertise
+  image         String?  // Profile photo URL
+  linkedIn      String?  // LinkedIn profile URL
+  twitter       String?  // Twitter/X handle
+  publications  Int      @default(0) // Number of publications
+  country       String   // African country
+  featured      Boolean  @default(false) // Show on homepage
+  createdAt     DateTime @default(now())
+
+  @@index([country])
+  @@index([featured])
+}
+
+// African innovations and startups
+model Innovation {
+  id          String   @id @default(uuid())
+  name        String
+  description String
+  category    String   // agriculture, health, tech, biotech, energy
+  country     String   // African country
+  stage       String   // research, prototype, commercial
+  image       String?  // Product/company image
+  website     String?  // Company website
+  founders    String[] // Founder names
+  yearFounded Int?     // Year founded
+  impact      String?  // Impact description
+  featured    Boolean  @default(false)
+  createdAt   DateTime @default(now())
+
+  @@index([category])
+  @@index([country])
+  @@index([featured])
+}
+
+// Research statistics for data visualizations
+model ResearchStats {
+  id          String   @id @default(uuid())
+  category    String   // agriculture, health, tech, overall
+  metric      String   // publications, patents, funding, researchers, etc.
+  value       Float    // Numeric value
+  year        Int      // Year of data
+  country     String?  // Specific country or null for continent-wide
+  source      String?  // Data source
+  createdAt   DateTime @default(now())
+
+  @@index([category])
+  @@index([year])
+  @@index([country])
+}
+
+// Gallery images for media library
+model GalleryImage {
+  id          String   @id @default(uuid())
+  src         String   // Image URL or base64
+  alt         String?  // Alt text
+  category    String?  // agriculture, health, tech, etc.
+  uploadedAt  DateTime @default(now())
+}
+
+// Admin users for authentication
+model AdminUser {
+  id           String   @id @default(uuid())
+  email        String   @unique
+  passwordHash String   // bcrypt hashed password
+  name         String?
+  lastLogin    DateTime?
+  createdAt    DateTime @default(now())
+}
