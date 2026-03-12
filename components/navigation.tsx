@@ -28,7 +28,7 @@ export function Navigation() {
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2">
             <Image 
-              src="/logo.png" 
+              src="/logo.svg" 
               alt="SciAfrica Logo" 
               width={40} 
               height={40} 
