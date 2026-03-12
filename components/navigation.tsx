@@ -30,11 +30,10 @@ export function Navigation() {
             <Image 
               src="/logo.svg" 
               alt="SciAfrica Logo" 
-              width={40} 
+              width={160} 
               height={40} 
-              className="rounded-full"
+              className="h-10 w-auto"
             />
-            <span className="font-bold text-xl hidden sm:inline text-foreground">SciAfrica</span>
           </Link>
 
           {/* Desktop Navigation */}
