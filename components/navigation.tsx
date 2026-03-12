@@ -1,6 +1,7 @@
 'use client'
 
 import Link from 'next/link'
+import Image from 'next/image'
 import { useState } from 'react'
 import { Menu, X } from 'lucide-react'
 import { Button } from '@/components/ui/button'
@@ -26,9 +27,13 @@ export function Navigation() {
         <div className="flex justify-between items-center h-20">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2">
-            <div className="w-10 h-10 rounded-full bg-primary text-primary-foreground flex items-center justify-center font-bold text-lg">
-              SA
-            </div>
+            <Image 
+              src="/logo.png" 
+              alt="SciAfrica Logo" 
+              width={40} 
+              height={40} 
+              className="rounded-full"
+            />
             <span className="font-bold text-xl hidden sm:inline text-foreground">SciAfrica</span>
           </Link>
 
