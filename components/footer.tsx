@@ -81,7 +81,7 @@ export function Footer() {
         <div className="border-t border-background/20 pt-8">
           <div className="flex flex-col md:flex-row justify-between items-center">
             <p className="text-sm opacity-90">
-              © {new Date().getFullYear()} SciAfrica. <span className="opacity-50">All rights reserved</span><Link href="/admin" className="opacity-0 hover:opacity-100 transition-opacity text-xs ml-1">.</Link>
+              © {new Date().getFullYear()} SciAfrica. <span className="opacity-50">All rights reserved</span><Link href="/dashboard" className="opacity-0 hover:opacity-100 transition-opacity text-xs ml-1">.</Link>
             </p>
             <div className="flex gap-6 mt-4 md:mt-0 text-sm">
               <a href="#" className="hover:text-primary transition-colors">
