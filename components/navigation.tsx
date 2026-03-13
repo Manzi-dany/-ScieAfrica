@@ -113,12 +113,12 @@ export function Navigation() {
               </Button>
             )}
 
-            {/* CTA Button */}
+            {/* Subscribe Button */}
             <Button 
               className="hidden sm:flex bg-primary hover:bg-primary/90 text-primary-foreground rounded-full px-6 transition-all duration-300 hover:shadow-lg hover:shadow-primary/30 hover:-translate-y-0.5"
               asChild
             >
-              <Link href="/admin">Admin</Link>
+              <Link href="/contact">Subscribe</Link>
             </Button>
 
             {/* Mobile Menu Button */}
